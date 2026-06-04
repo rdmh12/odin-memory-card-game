@@ -128,9 +128,16 @@ export default function App() {
 		);
 	});
 
+	const resetGame = () => {
+		// todo: fetch data
+		setPokemonOrder(shufflePokemons(pokemonData));
+		setPickedPokemonIds(new Set());
+	};
+
 	return (
 		<>
 			<div className="score">Score: {pickedPokemonIds.size}</div>
+			<button onClick={resetGame}>Reset</button>
 			<div className="pokemon-card-container">
 				{pokemonCards}
 			</div>
