@@ -90,6 +90,7 @@ async function fetchPokemonData() {
 export default function App() {
 	const [pokemonData, setPokemonData] = useState(testPokemonData);
 	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
+	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
 
 	// const [pokemonData, setPokemonData] = useState({});
 	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
@@ -104,16 +105,35 @@ export default function App() {
 	// 	}
 	// }, []);
 
+	const pickPokemonCard = (pokemonId) => {
+		const newPickedPokemonIds = new Set(pickedPokemonIds);
+		const newPokemonOrder = shufflePokemons(pokemonData);
+
+		newPickedPokemonIds.add(pokemonId);
+
+		setPickedPokemonIds(newPickedPokemonIds);
+		setPokemonOrder(newPokemonOrder);
+	};
+
 	const pokemonCards = pokemonOrder.map((pokemonId) => {
 		const pokemon = pokemonData[pokemonId];
+		const picked = pickedPokemonIds.has(pokemonId);
 		return (
-			<PokemonCard key={pokemonId} pokemon={pokemon} />
+			<PokemonCard
+				key={pokemonId}
+				pokemon={pokemon}
+				pokemonId={pokemonId}
+				onPicked={() => pickPokemonCard(pokemonId)}
+				picked={picked} />
 		);
 	});
 
 	return (
-		<div className="pokemon-card-container">
-			{pokemonCards}
-		</div>
+		<>
+			<div className="score">Score: {pickedPokemonIds.size}</div>
+			<div className="pokemon-card-container">
+				{pokemonCards}
+			</div>
+		</>
 	);
 }
