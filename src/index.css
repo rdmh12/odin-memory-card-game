@@ -14,3 +14,22 @@ body {
 
 #root {
 }
+
+.pokemon-card-container {
+	display: grid;
+	grid-template-columns: repeat(6, auto);
+	justify-content: center;
+	gap: 1em;
+}
+
+.pokemon-card {
+	width: 120px;
+	border: 1px solid #ddd;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.pokemon-card-sprite {
+	width: 95px;
+}
