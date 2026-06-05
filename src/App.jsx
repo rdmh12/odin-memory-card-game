@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import PokemonCard from "./PokemonCard.jsx";
 
+const MESSAGE_LOADING = "...";
+
 // const testPokemonData = {
 // 	[137]: {
 // 		"name": "Porygon",
@@ -96,7 +98,7 @@ export default function App() {
 	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
 
 	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
-	const [gameOverMessage, setGameOverMessage] = useState(null);
+	const [message, setMessage] = useState(MESSAGE_LOADING);
 	const [bestScore, setBestScore] = useState(0);
 	const [fetchData, setFetchData] = useState(true);
 
@@ -109,15 +111,16 @@ export default function App() {
 				setPokemonData(pokemonData);
 				setPokemonOrder(pokemonOrder);
 				setFetchData(false);
+				setMessage(null);
 			});
 		}
 	}, [fetchData]);
 
 	const pickPokemonCard = (pokemonId) => {
-		if (gameOverMessage != null) return;
+		if (message != null) return;
 
 		if (pickedPokemonIds.has(pokemonId)) {
-			setGameOverMessage("Game Over!");
+			setMessage("Game Over!");
 			setBestScore(Math.max(pickedPokemonIds.size, bestScore));
 		} else {
 			const newPickedPokemonIds = new Set(pickedPokemonIds);
@@ -126,7 +129,7 @@ export default function App() {
 			newPickedPokemonIds.add(pokemonId);
 
 			if (newPickedPokemonIds.size == pokemonOrder.length) {
-				setGameOverMessage("Victory!");
+				setMessage("Victory!");
 				setBestScore(Math.max(newPickedPokemonIds.size, bestScore));
 			} else {
 				setPokemonOrder(newPokemonOrder);
@@ -148,9 +151,9 @@ export default function App() {
 	});
 
 	const resetGame = () => {
+		setMessage(MESSAGE_LOADING);
 		setFetchData(true);
 		setPickedPokemonIds(new Set());
-		setGameOverMessage(null);
 	};
 
 	return (
@@ -173,7 +176,7 @@ export default function App() {
 			</header>
 			<main>
 				{pokemonCards}
-				<div className={gameOverMessage !== null ? "game-over-message" : "game-over-message-hidden"}>{gameOverMessage}</div>
+				<div className={message !== null ? "message" : "message-hidden"}>{message}</div>
 			</main>
 		</>
 	);
