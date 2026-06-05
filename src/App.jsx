@@ -91,6 +91,7 @@ export default function App() {
 	const [pokemonData, setPokemonData] = useState(testPokemonData);
 	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
 	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
+	const [gameOverMessage, setGameOverMessage] = useState(null);
 
 	// const [pokemonData, setPokemonData] = useState({});
 	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
@@ -106,13 +107,23 @@ export default function App() {
 	// }, []);
 
 	const pickPokemonCard = (pokemonId) => {
-		const newPickedPokemonIds = new Set(pickedPokemonIds);
-		const newPokemonOrder = shufflePokemons(pokemonData);
+		if (gameOverMessage != null) return;
 
-		newPickedPokemonIds.add(pokemonId);
+		if (pickedPokemonIds.has(pokemonId)) {
+			setGameOverMessage("Game Over!");
+		} else {
+			const newPickedPokemonIds = new Set(pickedPokemonIds);
+			const newPokemonOrder = shufflePokemons(pokemonData);
 
-		setPickedPokemonIds(newPickedPokemonIds);
-		setPokemonOrder(newPokemonOrder);
+			newPickedPokemonIds.add(pokemonId);
+
+			if (newPickedPokemonIds.size == pokemonOrder.length) {
+				setGameOverMessage("Victory!");
+			} else {
+				setPickedPokemonIds(newPickedPokemonIds);
+				setPokemonOrder(newPokemonOrder);
+			}
+		}
 	};
 
 	const pokemonCards = pokemonOrder.map((pokemonId) => {
@@ -132,6 +143,7 @@ export default function App() {
 		// todo: fetch data
 		setPokemonOrder(shufflePokemons(pokemonData));
 		setPickedPokemonIds(new Set());
+		setGameOverMessage(null);
 	};
 
 	return (
@@ -141,6 +153,7 @@ export default function App() {
 			<div className="pokemon-card-container">
 				{pokemonCards}
 			</div>
+			<div>{gameOverMessage}</div>
 		</>
 	);
 }
