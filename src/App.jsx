@@ -1,58 +1,56 @@
 import { useEffect, useState } from "react";
 import PokemonCard from "./PokemonCard.jsx";
 
-let initialized = false;
-
-const testPokemonData = {
-	[137]: {
-		"name": "Porygon",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/137.png"
-	},
-	[126]: {
-		"name": "Magmar",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/126.png"
-	},
-	[156]: {
-		"name": "Quilava",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/156.png"
-	},
-	[236]: {
-		"name": "Tyrogue",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/236.png"
-	},
-	[86]: {
-		"name": "Seel",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/86.png"
-	},
-	[114]: {
-		"name": "Tangela",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/114.png"
-	},
-	[212]: {
-		"name": "Scizor",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/212.png"
-	},
-	[125]: {
-		"name": "Electabuzz",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/125.png"
-	},
-	[43]: {
-		"name": "Oddish",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/43.png"
-	},
-	[141]: {
-		"name": "Kabutops",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/141.png"
-	},
-	[177]: {
-		"name": "Natu",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/177.png"
-	},
-	[37]: {
-		"name": "Vulpix",
-		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/37.png"
-	}
-};
+// const testPokemonData = {
+// 	[137]: {
+// 		"name": "Porygon",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/137.png"
+// 	},
+// 	[126]: {
+// 		"name": "Magmar",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/126.png"
+// 	},
+// 	[156]: {
+// 		"name": "Quilava",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/156.png"
+// 	},
+// 	[236]: {
+// 		"name": "Tyrogue",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/236.png"
+// 	},
+// 	[86]: {
+// 		"name": "Seel",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/86.png"
+// 	},
+// 	[114]: {
+// 		"name": "Tangela",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/114.png"
+// 	},
+// 	[212]: {
+// 		"name": "Scizor",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/212.png"
+// 	},
+// 	[125]: {
+// 		"name": "Electabuzz",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/125.png"
+// 	},
+// 	[43]: {
+// 		"name": "Oddish",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/43.png"
+// 	},
+// 	[141]: {
+// 		"name": "Kabutops",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/141.png"
+// 	},
+// 	[177]: {
+// 		"name": "Natu",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/177.png"
+// 	},
+// 	[37]: {
+// 		"name": "Vulpix",
+// 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/37.png"
+// 	}
+// };
 
 function shufflePokemons(pokemonData) {
 	const order = Array.from(Object.keys(pokemonData));
@@ -72,7 +70,13 @@ async function fetchPokemonData() {
 	const pokemonData = {};
 
 	for (let index = 0; index < pokemonCount; index++) {
-		const id = Math.floor(Math.random() * maxPokemonId) + 1;
+		let id;
+
+		// make sure that the random number generator picks unique ids
+		do {
+		 id = Math.floor(Math.random() * maxPokemonId) + 1;
+		} while (Object.hasOwn(pokemonData, id));
+
 		const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
 		const result = await response.json();
 
@@ -88,27 +92,26 @@ async function fetchPokemonData() {
 }
 
 export default function App() {
-	const [pokemonData, setPokemonData] = useState(testPokemonData);
-	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
+	// const [pokemonData, setPokemonData] = useState(testPokemonData);
+	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
 
 	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
 	const [gameOverMessage, setGameOverMessage] = useState(null);
 	const [bestScore, setBestScore] = useState(0);
 	const [fetchData, setFetchData] = useState(true);
 
-	// const [pokemonData, setPokemonData] = useState({});
-	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
-	//
-	// useEffect(() => {
-	// 	if (fetchData) {
-	// 		initialized = true;
-	// 		fetchPokemonData().then(([pokemonData, pokemonOrder]) => {
-	// 			setPokemonData(pokemonData);
-	// 			setPokemonOrder(pokemonOrder);
-	// 			setFetchData(false);
-	// 		});
-	// 	}
-	// }, [fetchData]);
+	const [pokemonData, setPokemonData] = useState({});
+	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
+
+	useEffect(() => {
+		if (fetchData) {
+			fetchPokemonData().then(([pokemonData, pokemonOrder]) => {
+				setPokemonData(pokemonData);
+				setPokemonOrder(pokemonOrder);
+				setFetchData(false);
+			});
+		}
+	}, [fetchData]);
 
 	const pickPokemonCard = (pokemonId) => {
 		if (gameOverMessage != null) return;
