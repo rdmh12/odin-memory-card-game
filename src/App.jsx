@@ -90,22 +90,25 @@ async function fetchPokemonData() {
 export default function App() {
 	const [pokemonData, setPokemonData] = useState(testPokemonData);
 	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
+
 	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
 	const [gameOverMessage, setGameOverMessage] = useState(null);
 	const [bestScore, setBestScore] = useState(0);
+	const [fetchData, setFetchData] = useState(true);
 
 	// const [pokemonData, setPokemonData] = useState({});
 	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
 	//
 	// useEffect(() => {
-	// 	if (!initialized) {
+	// 	if (fetchData) {
 	// 		initialized = true;
 	// 		fetchPokemonData().then(([pokemonData, pokemonOrder]) => {
 	// 			setPokemonData(pokemonData);
 	// 			setPokemonOrder(pokemonOrder);
+	// 			setFetchData(false);
 	// 		});
 	// 	}
-	// }, []);
+	// }, [fetchData]);
 
 	const pickPokemonCard = (pokemonId) => {
 		if (gameOverMessage != null) return;
@@ -144,8 +147,7 @@ export default function App() {
 	});
 
 	const resetGame = () => {
-		// todo: fetch data
-		setPokemonOrder(shufflePokemons(pokemonData));
+		setFetchData(true);
 		setPickedPokemonIds(new Set());
 		setGameOverMessage(null);
 	};
