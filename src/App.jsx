@@ -92,6 +92,7 @@ export default function App() {
 	const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons(testPokemonData));
 	const [pickedPokemonIds, setPickedPokemonIds] = useState(new Set());
 	const [gameOverMessage, setGameOverMessage] = useState(null);
+	const [bestScore, setBestScore] = useState(0);
 
 	// const [pokemonData, setPokemonData] = useState({});
 	// const [pokemonOrder, setPokemonOrder] = useState(shufflePokemons([]));
@@ -111,6 +112,7 @@ export default function App() {
 
 		if (pickedPokemonIds.has(pokemonId)) {
 			setGameOverMessage("Game Over!");
+			setBestScore(Math.max(pickedPokemonIds.size, bestScore));
 		} else {
 			const newPickedPokemonIds = new Set(pickedPokemonIds);
 			const newPokemonOrder = shufflePokemons(pokemonData);
@@ -119,10 +121,12 @@ export default function App() {
 
 			if (newPickedPokemonIds.size == pokemonOrder.length) {
 				setGameOverMessage("Victory!");
+				setBestScore(Math.max(newPickedPokemonIds.size, bestScore));
 			} else {
-				setPickedPokemonIds(newPickedPokemonIds);
 				setPokemonOrder(newPokemonOrder);
 			}
+
+			setPickedPokemonIds(newPickedPokemonIds);
 		}
 	};
 
@@ -149,6 +153,7 @@ export default function App() {
 	return (
 		<>
 			<div className="score">Score: {pickedPokemonIds.size}</div>
+			<div className="score">Best Score: {bestScore}</div>
 			<button onClick={resetGame}>Reset</button>
 			<div className="pokemon-card-container">
 				{pokemonCards}
