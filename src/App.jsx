@@ -135,14 +135,12 @@ export default function App() {
 
 	const pokemonCards = pokemonOrder.map((pokemonId) => {
 		const pokemon = pokemonData[pokemonId];
-		const picked = pickedPokemonIds.has(pokemonId);
 		return (
 			<PokemonCard
 				key={pokemonId}
 				pokemon={pokemon}
 				pokemonId={pokemonId}
-				onPicked={() => pickPokemonCard(pokemonId)}
-				picked={picked} />
+				onPicked={() => pickPokemonCard(pokemonId)} />
 		);
 	});
 
