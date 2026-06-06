@@ -31,16 +31,18 @@
 
 body {
   margin: 0;
-	padding: 1em;
+	padding: 0.4em;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
+	align-content: center;
 	background-color: var(--body-bg);
 }
 
 #root {
-	max-width: 800px;
-	min-width: 700px;
+	width: fit-content;
+	min-width: 250px;
 	margin: 0 auto;
 	box-shadow: 8px 8px 8px var(--root-shadow);
 }
@@ -73,20 +75,31 @@ header {
 }
 
 main {
-	padding: 2em;
+	padding: 0.5em;
 	position: relative;
 	display: grid;
-	grid-template-columns: repeat(4, auto);
+	grid-template-columns: repeat(4, min(20vw, 20vh));
 	justify-content: center;
-	gap: 1em;
+	gap: 0.5em;
 	border-radius: 0 0 var(--root-border-radius) var(--root-border-radius);
 	border: 1px solid var(--root-border);
 	background-color: var(--main-bg);
 }
 
+@media (orientation: landscape) {
+  main {
+		grid-template-columns: repeat(6, minmax(64px, 13vw));
+  }
+}
+
+@media (width > 600px) and (height > 650px) {
+  main {
+		grid-template-columns: repeat(4, min(20vw, 20vh));
+  }
+}
+
 .pokemon-card {
-	width: 150px;
-	padding: 0.5em;
+	padding: 0.1em;
 	border: 3px solid var(--card-border);
 	border-radius: 10px;
 	background-color: var(--card-bg);
@@ -103,10 +116,12 @@ main {
 
 .pokemon-card-name {
 	color: var(--name-fg);
+	font-size: min(2vw, 1rem);
+	font-weight: 700;
 }
 
 .pokemon-card-sprite {
-	width: 95px;
+	width: 100%;
 }
 
 .message-hidden {
@@ -142,11 +157,23 @@ main {
 	gap: 0.5em;
 }
 
+.score-label {
+	display: none;
+}
+
+@media (min-width: 430px) {
+	.score-label {
+		display: block;
+	}
+}
+
 .score svg {
 	width: 1em;
 	height: 1em;
 }
 
-.stretcher {
+.stretched {
 	flex: 1;
+	display: flex;
+	justify-content: flex-end;
 }
