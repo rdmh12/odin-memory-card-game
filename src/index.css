@@ -109,9 +109,11 @@ main {
 	align-items: center;
 }
 
-.pokemon-card:hover {
-	border-color: var(--card-border-hover);
-	cursor: pointer;
+@media (pointer: fine) {
+	.pokemon-card:hover {
+		border-color: var(--card-border-hover);
+		cursor: pointer;
+	}
 }
 
 .pokemon-card-name {
