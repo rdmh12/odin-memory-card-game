@@ -70,6 +70,7 @@ async function fetchPokemonData() {
 	const pokemonCount = 12;
 	const maxPokemonId = 251;
 	const pokemonData = {};
+	const requests = new Array(pokemonCount);
 
 	for (let index = 0; index < pokemonCount; index++) {
 		let id;
@@ -79,12 +80,18 @@ async function fetchPokemonData() {
 			id = Math.floor(Math.random() * maxPokemonId) + 1;
 		} while (Object.hasOwn(pokemonData, id));
 
-		const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-		const result = await response.json();
+		pokemonData[id] = {};
+		requests[index] = fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+	}
 
-		pokemonData[result.id] = {
-			name: result.name.charAt(0).toUpperCase() + result.name.slice(1),
-			sprite: result.sprites.other["official-artwork"].front_default,
+	const responses = await Promise.all(requests);
+	const results = responses.map((response) => response.json());
+	const data = await Promise.all(results);
+
+	for (const item of data) {
+		pokemonData[item.id] = {
+			name: item.name.charAt(0).toUpperCase() + item.name.slice(1),
+			sprite: item.sprites.other["official-artwork"].front_default,
 		};
 	}
 
