@@ -66,7 +66,7 @@ function shufflePokemons(pokemonData) {
 	return order;
 }
 
-async function fetchPokemonData() {
+async function fetchPokemonData(signal) {
 	const pokemonCount = 12;
 	const maxPokemonId = 251;
 	const pokemonData = {};
@@ -81,14 +81,21 @@ async function fetchPokemonData() {
 		} while (Object.hasOwn(pokemonData, id));
 
 		pokemonData[id] = {};
-		requests[index] = fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+		requests[index] = fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, { signal });
 	}
 
 	const responses = await Promise.all(requests);
-	const results = responses.map((response) => response.json());
+	const results = responses.map((response) => {
+		if (!response.ok) throw new Error("Failed to load Pokémon data");
+		return response.json();
+	});
 	const data = await Promise.all(results);
 
+	console.log(data.length);
+
 	for (const item of data) {
+		console.table(item);
+		console.log(item.id);
 		pokemonData[item.id] = {
 			name: item.name.charAt(0).toUpperCase() + item.name.slice(1),
 			sprite: item.sprites.other["official-artwork"].front_default,
@@ -96,6 +103,8 @@ async function fetchPokemonData() {
 	}
 
 	const pokemonOrder = shufflePokemons(pokemonData);
+
+	console.log("fetched...");
 
 	return [pokemonData, pokemonOrder];
 }
@@ -115,12 +124,25 @@ export default function App() {
 
 	useEffect(() => {
 		if (fetchData) {
-			fetchPokemonData().then(([pokemonData, pokemonOrder]) => {
-				setPokemonData(pokemonData);
-				setPokemonOrder(pokemonOrder);
-				setFetchData(false);
-				setMessage(null);
-			});
+			const controller = new AbortController();
+
+			const run = async () => {
+				try {
+					const [pokemonData, pokemonOrder] = await fetchPokemonData(controller.signal);
+					setPokemonData(pokemonData);
+					setPokemonOrder(pokemonOrder);
+					setFetchData(false);
+					setMessage(null);
+				} catch (error) {
+					if (error.name != "AbortError") {
+						setMessage(`error: ${error.message}`);
+					}
+				}
+			};
+
+			run();
+
+			return () => controller.abort();
 		}
 	}, [fetchData]);
 
@@ -128,7 +150,7 @@ export default function App() {
 		if (message != null) return;
 
 		if (pickedPokemonIds.has(pokemonId)) {
-			setMessage("Game Over!");
+			setMessage("GAME OVER!");
 			setBestScore(Math.max(pickedPokemonIds.size, bestScore));
 		} else {
 			const newPickedPokemonIds = new Set(pickedPokemonIds);
@@ -137,7 +159,7 @@ export default function App() {
 			newPickedPokemonIds.add(pokemonId);
 
 			if (newPickedPokemonIds.size == pokemonOrder.length) {
-				setMessage("Victory!");
+				setMessage("VICTORY!");
 				setBestScore(Math.max(newPickedPokemonIds.size, bestScore));
 			} else {
 				setPokemonOrder(newPokemonOrder);

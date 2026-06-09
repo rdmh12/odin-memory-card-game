@@ -76,6 +76,7 @@ header {
 
 main {
 	padding: 0.5em;
+	min-height: 300px;
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(4, min(20vw, 20vh));
@@ -137,13 +138,13 @@ main {
 	background-color: var(--message-bg);
 	color: var(--message-fg);
 	position: absolute;
-	font-size: 2rem;
+	font-size: 1.5rem;
 	font-weight: 600;
 	border-radius: 0 0 var(--root-border-radius) var(--root-border-radius);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	text-transform: uppercase;
+	padding: 2em;
 }
 
 .score {
